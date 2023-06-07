@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ondaySchedule.mapper.EventMapper">
+
+<!-- 일정 작성 -->
+	<insert id ="insertEvent" parameterType="ondaySchedule.dto.EventDto">
+		INSERT INTO t_event (event_name, event_color, start_date, end_date, all_day)
+			 VALUES (#{eventName}, #{eventColor}, #{startDate}, #{endDate}, #{allDay})
+	</insert>
+
+<!-- 캘린더용 데일리 일정 조회 -->
+	<select id ="selectDailyEventList" resultType="ondaySchedule.dto.EventDto">
+		SELECT event_id, event_name, event_color, start_date, end_date, all_day
+		  FROM t_event
+		 WHERE event_deleted_yn = 'N'
+		   AND end_date >= now()
+	  ORDER BY event_id desc
+	</select>
+	
+<!-- 일정 상세 조회 -->
+	<select id ="selectEventDetail" parameterType="int" resultType="ondaySchedule.dto.EventDto">
+		SELECT event_id, event_name, event_color, start_date, end_date, all_day
+		  FROM t_event
+		 WHERE event_deleted_yn = 'N'
+		   AND event_id = #{eventId}
+	</select>
+
+<!-- 사이드 바 일정 리스트 조회 -->
+	<select id ="selectEventList" resultType="ondaySchedule.dto.EventDto">
+		SELECT event_id, event_name, event_color, start_date, end_date, all_day
+		  FROM t_event
+		 WHERE event_deleted_yn = 'N'
+	  ORDER BY event_id asc
+	</select>
+
+<!-- 일정 수정 -->
+	<update id = "updateEvent" parameterType = "ondaySchedule.dto.EventDto">
+		UPDATE t_event
+		   SET event_name = #{eventName},
+			   event_color = #{eventColor},
+			   start_date = #{startDate},
+			   end_date = #{endDate},
+			   all_day = #{allDay}			   
+		 WHERE event_id = #{eventId}
+	</update>	
+
+<!-- 일정 삭제 -->
+	<update id = "deleteEvent" parameterType = "ondaySchedule.dto.EventDto">
+		UPDATE t_event
+		   SET event_deleted_yn = 'Y'
+		 WHERE event_id = #{eventId}
+	</update>
+
+</mapper>

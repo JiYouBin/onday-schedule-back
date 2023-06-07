@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ondaySchedule.mapper.TodoMapper">
+
+<!-- 할일 작성 -->
+	<insert id ="insertTodo" parameterType="ondaySchedule.dto.TodoDto">
+		INSERT INTO t_todo (todo_name)
+			 VALUES (#{todoName})
+	</insert>	
+
+<!-- 할일 조회 -->
+	<select id ="selectTodoList" parameterType="int" resultType="ondaySchedule.dto.TodoDto">
+		SELECT todo_id, todo_name, todo_complete
+		  FROM t_todo
+		 WHERE todo_deleted_yn = 'N'
+	  ORDER BY todo_id desc
+	</select>
+	
+<!-- 완료한 일 조회 -->
+	<select id ="selectEndTodoList" parameterType="int" resultType="ondaySchedule.dto.TodoDto">
+		SELECT todo_id, todo_Name
+		  FROM t_todo
+		 WHERE todo_deleted_yn = 'N'
+		   AND todo_complete = true
+	  ORDER BY todo_id desc
+	</select>
+
+<!-- 완료한 일 체크  -->
+	<update id ="completeTodoCheck" parameterType = "ondaySchedule.dto.TodoDto">
+		UPDATE t_todo
+		   SET todo_complete = true
+		 WHERE todo_deleted_yn = 'N'
+		   AND todo_id = #{todoId}
+	</update>
+
+<!-- 완료한 일 체크해제  -->
+	<update id ="completeTodoUnCheck" parameterType = "ondaySchedule.dto.TodoDto">
+		UPDATE t_todo
+		   SET todo_complete = false
+		 WHERE todo_deleted_yn = 'N'
+		   AND todo_id = #{todoId}
+	</update>
+
+<!-- 할일 수정 -->
+	<update id ="updateTodo" parameterType = "ondaySchedule.dto.TodoDto">
+		UPDATE t_todo
+		   SET todo_name = #{todoName}
+		 WHERE todo_id = #{todoId}
+	</update>
+
+<!-- 할일 삭제 -->
+	<update id ="deleteTodo" parameterType = "ondaySchedule.dto.TodoDto">
+		UPDATE t_todo
+		   SET todo_deleted_yn = 'Y'
+		 WHERE todo_id = #{todoId}
+	</update>
+
+</mapper>
